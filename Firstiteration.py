@@ -1,18 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  1 08:56:15 2017
-
-@author: Simon
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  1 03:13:44 2017
-
-@author: Simon
-"""
-
-# -*- coding: utf-8 -*-
 """
 Created on Mon Feb 27 19:02:32 2017
 
