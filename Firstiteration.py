@@ -168,8 +168,8 @@ class base(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
 
-        tk.Tk.iconbitmap(self, "iconz.ico")
-        tk.Tk.wm_title(self, "Mandelbrot Renderer")
+        #tk.Tk.iconbitmap(self, "iconz.ico")
+        tk.Tk.wm_title(self, "Mandelbrot Renderer (by Simon Mahns)")
 
 
         container = tk.Frame(self)
