@@ -7,6 +7,7 @@ Plug in your own coordinates
 9 color schemes to choose from (many more can be added)
 
 NAVIGATION (zoom around the fractals with your keyboard!):
+
 wasd: mandelbrot nav
 q: zoom (mandelbrot)
 r: return to default veiw (mandelbrot)
