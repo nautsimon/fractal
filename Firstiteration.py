@@ -15,13 +15,12 @@ from tkinter import Entry
 from tkinter import Label
 from tkinter import *
 from tkinter import messagebox
-import pygame
+from math import log10, floor
 import numpy as np
 from numba import jit
 
 from matplotlib import pyplot as plt
 from matplotlib import colors
-god = False
 def round_sig(x, sig=7):
         return round(x, sig-int(floor(log10(abs(x))))-1)
 
