@@ -15,22 +15,22 @@ from tkinter import Entry
 from tkinter import Label
 from tkinter import *
 from tkinter import messagebox
-
+import pygame
 import numpy as np
 from numba import jit
 
 from matplotlib import pyplot as plt
 from matplotlib import colors
-
-
-    
+god = False
+def round_sig(x, sig=7):
+        return round(x, sig-int(floor(log10(abs(x))))-1)
 
 
 #maths and display code derived/inspired from Jean Francois Puget 
 #https://www.ibm.com/developerworks/community/blogs/jfp/entry/My_Christmas_Gift?lang=en
 @jit
 def julia(z,maxiter,horizon,log_horizon): #a new function, where the basic mandelbrot factal formula will be declared
-    f = complex(-0.1, 0.65)
+    f = complex(-0.75, 0.15)
     #complex(-0.1, 0.65) #setting a C to Z C in the formula is a complex numbers
     for n in range(maxiter): #this for loop is getting the number of iterations (clearity)
         az = abs(z) #abosolute, this is also setting up for the next part is integral to plotting this fravtal
@@ -57,7 +57,7 @@ def mandelbrot(z,maxiter,horizon,log_horizon): #a new function, where the basic 
 @jit #this decorator implements the numPy library
 def mandelbrot_set(xmin,xmax,ymin,ymax,width,height,maxiter):#a new function, here the basic mandelbrot dimesinos will be created
     horizon = 2.0 ** 40 #this is creating the size of the image that will be displayed
-    log_horizon = np.log(np.log(horizon))/np.log(2) # this is the same string of numbers from before, her the horizon is being determined for display
+    log_horizon = np.log(np.log(horizon))/np.log(2) # this is the same string of numbers from before, her the horizon is being deed for display
     rx = np.linspace(xmin, xmax, width) #this line is list that is creating the x axis
     ry = np.linspace(ymin, ymax, height)# this line is list that is creating the y axis
     n1 = np.empty((width,height))# this line is creating the base for where the image will be plotted in
@@ -95,6 +95,10 @@ LARGE_FONT= ("Verdana", 12)
 NORM_FONT= ("Verdana", 10)
 SMOL_FONT= ("Verdana", 8)
 SMOLL_FONT= ("Verdana", 6)
+
+
+    
+    
 
 def AboutWindow(msg):
     popup = tk.Tk()
@@ -163,11 +167,13 @@ def Settings():
     e4 = tk.Entry(popup)
     e4.pack(side="top", fill="x")
     ymaxvar = e1.get()
+    label4.bind("<Up>", arrow)
        
     B1 = ttk.Button(popup, text="Apply", command = popup.destroy)
     B1.pack()
 
- 
+    def arrow(event):
+        print("poop")
 
 class base(tk.Tk):
     
@@ -204,7 +210,7 @@ class base(tk.Tk):
         for F in (JuliaPage,  MainPage, StartPage):
 
             frame = F(container, self)
-
+            
             self.frames[F] = frame
 
             frame.grid(row=0, column=0, sticky="nsew")
@@ -225,14 +231,18 @@ class StartPage(tk.Frame):
         label.pack(pady=10,padx=10)
 
         button = ttk.Button(self, text="The Mandelbrot set", command=lambda: controller.show_frame(MainPage))
-        buttona = ttk.Button(self, text ="The Julia Set", command=lambda: controller.show_frame(JuliaPage))
+        
+        buttona = ttk.Button(self, text ="The Julia Set", command=lambda: controller.show_frame(JuliaPage) )
         button.pack()
         buttona.pack()
+        
+
+        
 
 class JuliaPage(tk.Frame):   
         
     
-
+    
     @jit
     def julia_set(xmin,xmax,ymin,ymax,width,height,maxiter):#a new function, here the basic mandelbrot dimesinos will be created
         horizon = 2.0 ** 40 #this is creating the size of the image that will be displayed
@@ -252,7 +262,7 @@ class JuliaPage(tk.Frame):
         dpi = 80
         img_width = dpi * width
         img_height = dpi * height
-        x,y,z = JuliaPage.julia_set(-1.25,1.25 ,-1.25, 1.25,800, 800, 2048)
+        x,y,z = JuliaPage.julia_set(xmin,xmax,ymin,ymax,img_width,img_height,maxiter)
 
         ticks = np.arange(0,img_width,3*dpi)
         x_ticks = xmin + (xmax-xmin)*ticks/img_width
@@ -263,12 +273,21 @@ class JuliaPage(tk.Frame):
         norm = colors.PowerNorm(gamma)
         ax.imshow(z.T,cmap=cmap,origin='lower',norm=norm)
 
-     
+    
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg = 'white')
+       # root = tk.Tk()
+        controller.bind('<Left>', lambda event: JuliaPage.left(self))
+        controller.bind('<Right>', lambda event: JuliaPage.right(self))
+        controller.bind('<Up>', lambda event: JuliaPage.up(self))
+        controller.bind('<Down>', lambda event: JuliaPage.down(self))
+        controller.bind('<Return>', lambda event: JuliaPage.home(self))
+        controller.bind('<x>', lambda event: JuliaPage.zoomin(self))
+        
         values = ['jet', 'rainbow', 'ocean', 'hot', 'cubehelix','gnuplot','terrain','prism', 'pink']  
         button1 = ttk.Button(self, text="Back to Home",command=lambda: controller.show_frame(StartPage))
         button1.pack(side = BOTTOM)
+        
         button2 = ttk.Button(self, text="Re-Render",command=self.plot_julia)
         button2.pack(side = TOP)
 
@@ -291,21 +310,21 @@ class JuliaPage(tk.Frame):
         label22 = ttk.Label(self, text="xmax", font=SMOLL_FONT)
         label22.pack()
         self.e2 = tk.Entry(self)
-        self.e2.insert(0, 0.5)
+        self.e2.insert(0, 2.0 )
         self.e2.pack()
         
     
         label33 = ttk.Label(self, text="ymin", font=SMOLL_FONT)
         label33.pack()
         self.e3 = tk.Entry(self)
-        self.e3.insert(0, -1.25)
+        self.e3.insert(0, -2.0)
         self.e3.pack()
         
     
         label44 = ttk.Label(self, text="ymax", font=SMOLL_FONT)
         label44.pack()
         self.e4 = tk.Entry(self)
-        self.e4.insert(0, 1.25)
+        self.e4.insert(0, 2.0)
         self.e4.pack()
         
         self.width, self.height = 10, 10
@@ -318,8 +337,122 @@ class JuliaPage(tk.Frame):
         self.canvas.get_tk_widget().pack(side = tk.TOP, fill=tk.BOTH, expand=True)
         
         self.plot_julia()
+    
+        
+    def left(self):
+        print("You hit left.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin - ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax - ((abs(xxmin - xxmax))/3))
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        print (xxmax)
+        print (xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.plot_julia()
+    
+    def right(self):
+        print("You hit right.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin + ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax + ((abs(xxmin - xxmax))/3))
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.plot_julia()
+    
+    def up(self):
+        print("You hit up.")  
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        yymin = (yymin + ((abs(yymin - yymax))/3))
+        yymax = (yymax + ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot_julia()
+    
+    def down(self):
+        print("You hit down.")  
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        yymin = (yymin - ((abs(yymin - yymax))/3))
+        yymax = (yymax - ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot_julia()
+        
+    def zoomin(self):
+        print("You hit down.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin + ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax - ((abs(xxmin - xxmax))/3))
+        yymin = (yymin + ((abs(yymin - yymax))/3))
+        yymax = (yymax - ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot_julia()
+    
+    def home(self):
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e1.insert(0, -2)
+        self.e2.insert(0, 2)
+        self.e3.insert(0, -2)
+        self.e4.insert(0, 2)
+        self.plot_julia()
         
         
+        
+
+        #while (god):
+#             if keys[pygame.K_LEFT]:
+#                 xxmin = int(self.e1.get())
+#                 print (xxmin)
+# ===========================================================================
+            
     def plot_julia (self):
         colr = self.combobox.get()
         print (colr)
@@ -360,9 +493,9 @@ class MainPage(tk.Frame):
         tk.Frame.__init__(self, parent, bg = 'white')
         
         values = ['jet', 'rainbow', 'ocean', 'hot', 'cubehelix','gnuplot','terrain','prism', 'pink']  
-        button1 = ttk.Button(self, text="Back to Home",command=lambda: controller.show_frame(StartPage))
+        button1 = tk.Button(self, text="Back to Home",command=lambda: controller.show_frame(StartPage))
         button1.pack(side = BOTTOM)
-        button2 = ttk.Button(self, text="Re-Render",command=self.plot)
+        button2 = tk.Button(self, text="Re-Render",command=self.plot)
         button2.pack(side = TOP)
 
         self.combobox = ttk.Combobox(self, values=values)
@@ -409,7 +542,12 @@ class MainPage(tk.Frame):
         toolbar = NavigationToolbar2TkAgg(self.canvas, self)
         toolbar.update()
         self.canvas.get_tk_widget().pack(side = tk.TOP, fill=tk.BOTH, expand=True)
-        
+        controller.bind('<a>', lambda event: MainPage.left(self))
+        controller.bind('<d>', lambda event: MainPage.right(self))
+        controller.bind('<w>', lambda event: MainPage.up(self))
+        controller.bind('<s>', lambda event: MainPage.down(self))
+        controller.bind('<r>', lambda event: MainPage.home(self))
+        controller.bind('<q>', lambda event: MainPage.zoomin(self))
         self.plot ()
 
         
@@ -427,8 +565,112 @@ class MainPage(tk.Frame):
 
         self.canvas.draw()
 
-
+    def left(self):
+        print("You hit left.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin - ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax - ((abs(xxmin - xxmax))/3))
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        print (xxmax)
+        print (xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.plot()
+    
+    def right(self):
+        print("You hit right.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin + ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax + ((abs(xxmin - xxmax))/3))
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.plot()
+    
+    def up(self):
+        print("You hit up.")  
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        yymin = (yymin + ((abs(yymin - yymax))/3))
+        yymax = (yymax + ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot()
+    
+    def down(self):
+        print("You hit down.")  
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        yymin = (yymin - ((abs(yymin - yymax))/3))
+        yymax = (yymax - ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot()
+        
+    def zoomin(self):
+        print("You hit down.")  
+        xxmin = float(self.e1.get())
+        xxmax = float(self.e2.get())
+        yymin = float(self.e3.get())
+        yymax = float(self.e4.get())
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        xxmin = (xxmin + ((abs(xxmin - xxmax))/3))
+        xxmax = (xxmax - ((abs(xxmin - xxmax))/3))
+        yymin = (yymin + ((abs(yymin - yymax))/3))
+        yymax = (yymax - ((abs(yymin - yymax))/3))
+        yymax= round_sig(yymax)
+        yymin= round_sig(yymin)
+        xxmax= round_sig(xxmax)
+        xxmin= round_sig(xxmin)
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e1.insert(0, xxmin)
+        self.e2.insert(0, xxmax)
+        self.e3.insert(0, yymin)
+        self.e4.insert(0, yymax)
+        self.plot()
+    
+    def home(self):
+        self.e1.delete(0, END)
+        self.e2.delete(0, END)
+        self.e3.delete(0, END)
+        self.e4.delete(0, END)
+        self.e1.insert(0, -2.0)
+        self.e2.insert(0, 0.5)
+        self.e3.insert(0, -1.25)
+        self.e4.insert(0, 1.25)
+        self.plot()
 
 app = base()
+
 app.geometry ("800x630")
 app.mainloop()
