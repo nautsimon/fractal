@@ -283,7 +283,7 @@ class JuliaPage(tk.Frame):
         controller.bind('<Return>', lambda event: JuliaPage.home(self))
         controller.bind('<x>', lambda event: JuliaPage.zoomin(self))
         
-        values = ['jet', 'rainbow', 'ocean', 'hot', 'cubehelix','gnuplot','terrain','prism', 'pink']  
+        values = ['jet', 'rainbow', 'ocean', 'hot', 'magma', 'cubehelix','gnuplot','terrain','prism', 'pink', 'BuPu', 'seismic', 'plasma']  
         button1 = ttk.Button(self, text="Back to Home",command=lambda: controller.show_frame(StartPage))
         button1.pack(side = BOTTOM)
         
