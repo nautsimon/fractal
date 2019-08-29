@@ -25,8 +25,6 @@ def round_sig(x, sig=7):
         return round(x, sig-int(floor(log10(abs(x))))-1)
 
 
-#maths and display code derived/inspired from Jean Francois Puget 
-#https://www.ibm.com/developerworks/community/blogs/jfp/entry/My_Christmas_Gift?lang=en
 @jit
 def julia(z,maxiter,horizon,log_horizon): #a new function, where the basic mandelbrot factal formula will be declared
     f = complex(-0.75, 0.15)
