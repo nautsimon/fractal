@@ -28,53 +28,70 @@ from matplotlib import colors
 def round_sig(x, sig=7):
         return round(x, sig-int(floor(log10(abs(x))))-1)
 
-
+#this decorator implements the numPy library
 @jit
 def julia(z,maxiter,horizon,log_horizon): 
-    # a new function, where the basic mandelbrot factal formula will be declared
+    # a new function, where the basic mandelbrot fractal formula will be declared
     # complex(-0.1, 0.65) #setting a C to Z C in the formula is a complex numbers
 
     f = complex(-0.75, 0.15)
-    # this for loop is getting the number of iterations (clearity)
+    # this for loop is getting the number of iterations (clarity)
     for n in range(maxiter): 
-        az = abs(z) #abosolute, this is also setting up for the next part is integral to plotting this fravtal
-        if az > horizon: #the horizon is 2, the magic number  for the mandelbrot set, if the number produced is less than 2 it is black
-            return n - np.log(np.log(az))/np.log(2) + log_horizon #here those valus are reuturn to this formula will help in the shading between colors on the the next funct
+        # absolute, this is also setting up for the next part is integral to plotting this fractal
+        az = abs(z) 
+        # the horizon is 2, the magic number  for the mandelbrot set, if the number produced is less than 2 it is black
+        if az > horizon: 
+            # here those values are return to this formula will help in the shading between colors on the the next function
+            return n - np.log(np.log(az))/np.log(2) + log_horizon 
         z = z*z + f #this is the formula
     return 0
 
-
-@jit  #this decorator implements the numPy library
-def mandelbrot(z,maxiter,horizon,log_horizon): #a new function, where the basic mandelbrot factal formula will be declared
-
+#this decorator implements the numPy library
+@jit  
+def mandelbrot(z,maxiter,horizon,log_horizon): #a new function, where the basic mandelbrot fractal formula will be declared
+    # complex(-0.1, 0.65) 
     s = z
-        
-    #complex(-0.1, 0.65) #setting a C to Z C in the formula is a complex numbers
-    for n in range(maxiter): #this for loop is getting the number of iterations (clearity)
-        az = abs(z) #abosolute, this is also setting up for the next part is integral to plotting this fravtal
-        if az > horizon: #the horizon is 2, the magic number  for the mandelbrot set, if the number produced is less than 2 it is black
-            return n - np.log(np.log(az))/np.log(2) + log_horizon #here those valus are reuturn to this formula will help in the shading between 
-                                                                  #colors on the the next function
-        z = z*z + s #this is the formula
-    return 0#these two lines show that if the number is instantly infinity a zero is returned, meaning it is out of out domain 
+    #setting a C to Z C in the formula is a complex numbers
+    # this for loop is getting the number of iterations (clarity)
+    for n in range(maxiter): 
+        # absolute, this is also setting up for the next part is integral to plotting this fractal
+        az = abs(z) 
+        # the horizon is 2, the magic number  for the mandelbrot set, if the number produced is less than 2 it is black
+        if az > horizon: 
+            # here those values are return to this formula will help in the shading between colors on the the next function
+            return n - np.log(np.log(az))/np.log(2) + log_horizon 
+        # these two lines show that if the number is instantly infinity a zero is returned, meaning it is out of out domain 
+        z = z*z + s # this is the formula
+    return 0
 
-@jit #this decorator implements the numPy library
-def mandelbrot_set(xmin,xmax,ymin,ymax,width,height,maxiter):#a new function, here the basic mandelbrot dimesinos will be created
-    horizon = 2.0 ** 40 #this is creating the size of the image that will be displayed
-    log_horizon = np.log(np.log(horizon))/np.log(2) # this is the same string of numbers from before, her the horizon is being deed for display
-    rx = np.linspace(xmin, xmax, width) #this line is list that is creating the x axis
-    ry = np.linspace(ymin, ymax, height)# this line is list that is creating the y axis
-    n1 = np.empty((width,height))# this line is creating the base for where the image will be plotted in
-    for i in range(width): #this for loop is identifying each point in the x axis as well as the ticks for the plot
-        for j in range(height): #this for loop is identifying each point in the y axis as well as the ticks for the plot
-            n1[i,j] = mandelbrot(rx[i] + 1j*ry[j],maxiter,horizon, log_horizon) #this is creating the entire plot but only within the computer
-                                                                                #this plot still needs to be drawn foward
-    return (rx,ry,n1) #returns the values created for sue in the display
+# this decorator implements the numPy library
+@jit 
+def mandelbrot_set(xmin,xmax,ymin,ymax,width,height,maxiter):
+    # a new function, here the basic mandelbrot dimensions will be created
+    # this is creating the size of the image that will be displayed
+    horizon = 2.0 ** 40
+    # this is the same string of numbers from before, her the horizon is being deed for display
+    log_horizon = np.log(np.log(horizon))/np.log(2) 
+    # this line is list that is creating the x axis
+    rx = np.linspace(xmin, xmax, width) 
+    # this line is list that is creating the y axis
+    ry = np.linspace(ymin, ymax, height)
+    # this line is creating the base for where the image will be plotted in
+    n1 = np.empty((width,height))
+    for i in range(width):
+         # this for loop is identifying each point in the x axis as well as the ticks for the plot
+        for j in range(height): 
+            # this for loop is identifying each point in the y axis as well as the ticks for the plot
+            # this is creating the entire plot but only within the computer
+            n1[i,j] = mandelbrot(rx[i] + 1j*ry[j],maxiter,horizon, log_horizon) 
+     # returns the values created for sue in the display   
+     ##this plot still needs to be drawn forward                                                                         
+    return (rx,ry,n1)
 
 
 def mandelbrot_image(ax, xmin=-2.0,xmax=0.5,ymin=-1.25,ymax=1.25,width=10,height=10,
-             maxiter=2048,cmap='hot',gamma=0.3): #the coords and cmap are essentially a filler for the imput in the plot() function at the bottom of the code
-
+             maxiter=2048,cmap='hot',gamma=0.3): 
+    # the coords and cmap are essentially a filler for the input in the plot() function at the bottom of the code
 
     dpi = 80
     img_width = dpi * width
@@ -248,20 +265,30 @@ class JuliaPage(tk.Frame):
     
     
     @jit
-    def julia_set(xmin,xmax,ymin,ymax,width,height,maxiter):#a new function, here the basic mandelbrot dimesinos will be created
-        horizon = 2.0 ** 40 #this is creating the size of the image that will be displayed
-        log_horizon = np.log(np.log(horizon))/np.log(2) # this is the same string of numbers from before, her the horizon is being determined for display
-        rx = np.linspace(xmin, xmax, width) #this line is list that is creating the x axis
-        ry = np.linspace(ymin, ymax, height)# this line is list that is creating the y axis
-        n1 = np.empty((width,height))# this line is creating the base for where the image will be plotted in
-        for i in range(width): #this for loop is identifying each point in the x axis as well as the ticks for the plot
-            for j in range(height): #this for loop is identifying each point in the y axis as well as the ticks for the plot
-                n1[i,j] = julia(rx[i] + 1j*ry[j],maxiter,horizon, log_horizon) #this is creating the entire plot but only within the computer
-                                                                                #this plot still needs to be drawn foward
+    def julia_set(xmin,xmax,ymin,ymax,width,height,maxiter):
+        # a new function, here the basic mandelbrot dimensions will be created
+        # this is creating the size of the image that will be displayed
+        horizon = 2.0 ** 40 
+        # this is the same string of numbers from before, her the horizon is being determined for display
+        log_horizon = np.log(np.log(horizon))/np.log(2) 
+        # this line is list that is creating the x axis
+        rx = np.linspace(xmin, xmax, width) 
+        # this line is list that is creating the y axis
+        ry = np.linspace(ymin, ymax, height)
+        # this line is creating the base for where the image will be plotted in
+        n1 = np.empty((width,height))
+        for i in range(width): 
+        # this for loop is identifying each point in the x axis as well as the ticks for the plot
+            for j in range(height): 
+            # this for loop is identifying each point in the y axis as well as the ticks for the plot
+                n1[i,j] = julia(rx[i] + 1j*ry[j],maxiter,horizon, log_horizon) 
+        # this is creating the entire plot but only within the computer
+        # this plot still needs to be drawn forward
         return (rx,ry,n1)
 
     def julia_image(ax, xmin=-2.0,xmax=0.5,ymin=-1.25,ymax=1.25,width=10,height=10,\
-             maxiter=2048,cmap='hot',gamma=0.3): #the coords and cmap are essentially a filler for the imput in the plot() function at the bottom of the code
+             maxiter=2048,cmap='hot',gamma=0.3): 
+        # the coords and cmap are essentially a filler for the imput in the plot() function at the bottom of the code
         print (xmin, xmax,ymax, ymin, width, height, maxiter)
         dpi = 80
         img_width = dpi * width
@@ -280,7 +307,7 @@ class JuliaPage(tk.Frame):
     
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg = 'white')
-       # root = tk.Tk()
+        # root = tk.Tk()
         controller.bind('<Left>', lambda event: JuliaPage.left(self))
         controller.bind('<Right>', lambda event: JuliaPage.right(self))
         controller.bind('<Up>', lambda event: JuliaPage.up(self))
