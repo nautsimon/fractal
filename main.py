@@ -6,7 +6,11 @@ Created on Mon Feb 27 19:02:32 2017
 
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+try:
+    from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+except ImportError:
+    from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk as NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 
 import tkinter as tk
@@ -26,10 +30,13 @@ def round_sig(x, sig=7):
 
 
 @jit
-def julia(z,maxiter,horizon,log_horizon): #a new function, where the basic mandelbrot factal formula will be declared
+def julia(z,maxiter,horizon,log_horizon): 
+    # a new function, where the basic mandelbrot factal formula will be declared
+    # complex(-0.1, 0.65) #setting a C to Z C in the formula is a complex numbers
+
     f = complex(-0.75, 0.15)
-    #complex(-0.1, 0.65) #setting a C to Z C in the formula is a complex numbers
-    for n in range(maxiter): #this for loop is getting the number of iterations (clearity)
+    # this for loop is getting the number of iterations (clearity)
+    for n in range(maxiter): 
         az = abs(z) #abosolute, this is also setting up for the next part is integral to plotting this fravtal
         if az > horizon: #the horizon is 2, the magic number  for the mandelbrot set, if the number produced is less than 2 it is black
             return n - np.log(np.log(az))/np.log(2) + log_horizon #here those valus are reuturn to this formula will help in the shading between colors on the the next funct
@@ -192,7 +199,7 @@ class base(tk.Tk):
         filemenu.add_separator()
         #filemenu.add_command(label="Settings", command=lambda: Settings())
         filemenu.add_command(label="Julia Set", command = lambda: AboutWindow("go to main menu"))
-        filemenu.add_command(label="About", command = lambda: AboutWindow("THIS WAS A FUN PROJECT"))
+        filemenu.add_command(label="About", command = lambda: AboutWindow("wasd: Up, Left, Down, Right\nq: Zoom\nr: reset to original view"))
         filemenu.add_separator()
         menubar.add_cascade(label="File", menu=filemenu)
         
@@ -328,7 +335,7 @@ class JuliaPage(tk.Frame):
         fig = Figure(figsize=(self.width, self.height))
         self.ax = fig.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(fig, self)
-        self.canvas.show()
+        self.canvas.draw()
         toolbar = NavigationToolbar2TkAgg(self.canvas, self)
         toolbar.update()
         self.canvas.get_tk_widget().pack(side = tk.TOP, fill=tk.BOTH, expand=True)
@@ -535,7 +542,7 @@ class MainPage(tk.Frame):
         fig = Figure(figsize=(self.width, self.height))
         self.ax = fig.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(fig, self)
-        self.canvas.show()
+        self.canvas.draw()
         toolbar = NavigationToolbar2TkAgg(self.canvas, self)
         toolbar.update()
         self.canvas.get_tk_widget().pack(side = tk.TOP, fill=tk.BOTH, expand=True)
