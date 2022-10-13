@@ -1,5 +1,5 @@
 # Fractal
-![img1](https://github.com/simonmahns/fractal/blob/[master]/img/img1.jpg?raw=true)
+![img1](https://github.com/simonmahns/fractal/blob/master/img/img1.jpg?raw=true)
 
 
 This program is a easy to use mandelbrot/julia set renderer that utilizes matplotlib.
@@ -17,7 +17,7 @@ This is my first ever project in python and I had a lot of fun writing this prog
 
 Cleaner code will be coming soon...
 
-![img2](https://github.com/simonmahns/fractal/blob/[master]/img/img2.jpg?raw=true)
+![img2](https://github.com/simonmahns/fractal/blob/master/img/img2.jpg?raw=true)
 
 
 NAVIGATION (zoom around the fractals with your keyboard!):
