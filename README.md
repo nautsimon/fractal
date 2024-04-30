@@ -1,4 +1,4 @@
-# Fractal - my first ever coding project
+# Fractal - my first coding project
 ![img1](https://github.com/simonmahns/fractal/blob/master/img/img1.jpg?raw=true)
 
 
